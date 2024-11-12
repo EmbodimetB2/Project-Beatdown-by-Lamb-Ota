@@ -1,0 +1,187 @@
+-- Create a new ScreenGui in the PlayerGui
+local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "PizzaFarmGui"
+screenGui.Parent = playerGui
+
+-- Create the main frame for the GUI
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 200, 0, 200) -- Adjusted height to fit new buttons
+mainFrame.Position = UDim2.new(0.5, -100, 0.5, -100) -- Centered
+mainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+
+-- Create Exit Button (X)
+local exitButton = Instance.new("TextButton")
+exitButton.Size = UDim2.new(0, 30, 0, 30)
+exitButton.Position = UDim2.new(1, -35, 0, 5)
+exitButton.Text = "X"
+exitButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+exitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+exitButton.BorderSizePixel = 0
+exitButton.Parent = mainFrame
+
+exitButton.MouseButton1Click:Connect(function()
+    screenGui:Destroy() -- Remove the GUI when clicked
+end)
+
+-- Create Pizza Farm Button
+local pizzaButton = Instance.new("TextButton")
+pizzaButton.Size = UDim2.new(1, 0, 0, 40)
+pizzaButton.Position = UDim2.new(0, 0, 0, 40)
+pizzaButton.Text = "Start Pizza Farm"
+pizzaButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+pizzaButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+pizzaButton.BorderSizePixel = 0
+pizzaButton.Parent = mainFrame
+
+-- Speed Adjustment
+local speed = 255
+local speedLabel = Instance.new("TextLabel")
+speedLabel.Size = UDim2.new(1, 0, 0, 20)
+speedLabel.Position = UDim2.new(0, 0, 0, 120)
+speedLabel.Text = "Speed: " .. speed
+speedLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+speedLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedLabel.BorderSizePixel = 0
+speedLabel.Parent = mainFrame
+
+local plusButton = Instance.new("TextButton")
+plusButton.Size = UDim2.new(0.5, 0, 0, 20)
+plusButton.Position = UDim2.new(0.5, 0, 0, 140)
+plusButton.Text = "+"
+plusButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+plusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+plusButton.Parent = mainFrame
+
+local minusButton = Instance.new("TextButton")
+minusButton.Size = UDim2.new(0.5, 0, 0, 20)
+minusButton.Position = UDim2.new(0, 0, 0, 140)
+minusButton.Text = "-"
+minusButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+minusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minusButton.Parent = mainFrame
+
+plusButton.MouseButton1Click:Connect(function()
+    if speed < 240 then -- Cap speed at 240
+        speed = speed + 5
+        speedLabel.Text = "Speed: " .. speed
+    end
+end)
+
+minusButton.MouseButton1Click:Connect(function()
+    if speed > 5 then -- Set a minimum speed limit of 5
+        speed = speed - 5
+        speedLabel.Text = "Speed: " .. speed
+    end
+end)
+
+-- Confirmation GUI
+local confirmGui = Instance.new("Frame")
+confirmGui.Size = UDim2.new(0, 150, 0, 100)
+confirmGui.Position = UDim2.new(0.5, -75, 0.5, -50)
+confirmGui.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+confirmGui.Visible = false
+confirmGui.AnchorPoint = Vector2.new(0.5, 0.5)
+confirmGui.Parent = screenGui
+
+-- Confirmation message
+local confirmLabel = Instance.new("TextLabel")
+confirmLabel.Size = UDim2.new(1, 0, 0.5, 0)
+confirmLabel.Position = UDim2.new(0, 0, 0, 0)
+confirmLabel.Text = "Continue Pizza Farm?"
+confirmLabel.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+confirmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+confirmLabel.BorderSizePixel = 0
+confirmLabel.Parent = confirmGui
+
+-- Yes Button
+local yesButton = Instance.new("TextButton")
+yesButton.Size = UDim2.new(0.5, 0, 0.25, 0)
+yesButton.Position = UDim2.new(0, 0, 0.5, 0)
+yesButton.Text = "Yes"
+yesButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+yesButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+yesButton.Parent = confirmGui
+
+-- No Button
+local noButton = Instance.new("TextButton")
+noButton.Size = UDim2.new(0.5, 0, 0.25, 0)
+noButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+noButton.Text = "No"
+noButton.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
+noButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+noButton.Parent = confirmGui
+
+-- X Button (Close the confirmation without taking action)
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(1, 0, 0.25, 0)
+closeButton.Position = UDim2.new(0, 0, 0.75, 0)
+closeButton.Text = "X"
+closeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Parent = confirmGui
+
+-- Show the confirmation GUI when clicking Pizza Farm button
+pizzaButton.MouseButton1Click:Connect(function()
+    confirmGui.Visible = true
+end)
+
+-- Yes Button: Continue farming
+yesButton.MouseButton1Click:Connect(function()
+    confirmGui.Visible = false -- Hide confirmation GUI
+    isFarming = true
+    pizzaButton.Text = "Stop Pizza Farm"
+    shared.EzMone = true
+    setNoclip(true) -- Enable noclip
+    hideCharacterAppearance() -- Hide appearance
+    while shared.EzMone do
+        wait()
+        local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+        if not character:FindFirstChild("Arrow") then
+            local targetCFrame = game:GetService("Workspace").Missions.PizzaDelivery.CFrame
+            tweenToTarget(targetCFrame) -- Tween to the pizza delivery location
+            fireclickdetector(game:GetService("Workspace").Missions.PizzaDelivery.ClickDetector)
+        else
+            local targetCFrame = character.Arrow.Attachment0.Parent.CFrame
+            tweenToTarget(targetCFrame) -- Tween to the arrow location
+        end
+    end
+end)
+
+-- No Button: Kick player
+noButton.MouseButton1Click:Connect(function()
+    game.Players.LocalPlayer:Kick("You have been removed from the game.")
+end)
+
+-- X Button: Close confirmation GUI without action
+closeButton.MouseButton1Click:Connect(function()
+    confirmGui.Visible = false
+end)
+
+-- Function to remove character appearance (clothes, face, etc.)
+local function hideCharacterAppearance()
+    local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+    for _, item in ipairs(character:GetChildren()) do
+        if item:IsA("Accessory") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("Face") then
+            item:Destroy()
+        end
+    end
+    game.Players.LocalPlayer.DisplayName = "" -- Clear display name
+end
+
+-- Function to set noclip on the character
+local function setNoclip(enabled)
+    local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not enabled
+        end
+    end
+end
+
+-- Debug message to confirm GUI creation
+print("Pizza Farm GUI with Speed Control, Noclip, Confirmation, and Appearance Removal has been created!")
